@@ -30,7 +30,7 @@ return [
             'path' => env('PUSHER_APP_PATH'),
             'capacity' => null,
             'enable_client_messages' => false,
-            'enable_statistics' => true,
+            'enable_statistics' => env('PUSHER_APP_ENABLE_STATISTICS'),
         ],
     ],
 
@@ -102,7 +102,7 @@ return [
          * Use an DNS resolver to make the requests to the statistics logger
          * default is to resolve everything to 127.0.0.1.
          */
-        'perform_dns_lookup' => false,
+        'perform_dns_lookup' => env('LARAVEL_WEBSOCKETS_PERFORM_DNS_LOOKUP', true),
     ],
 
     /*
