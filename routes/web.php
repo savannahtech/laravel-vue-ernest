@@ -1,5 +1,8 @@
 <?php
 
+use App\Events\CommandEvent;
+use App\Http\Controllers\CommandController;
+use App\Models\Command;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,7 +39,11 @@ Route::get('/login',function (){
 });
 
 Route::get('/ok',function (){
-   return auth()->user();
+    $command = new Command('12','Some Title', 'A', 123, 22, 44);
+
+    broadcast(new CommandEvent($command));
+
+   return ["data" => "command"];
 });
 
 Route::post('/user',function (){
@@ -65,3 +72,5 @@ function sendToMain(){
     $auth = Auth::check() ? auth()->user():[];
     return view('main',compact('auth'));
 }
+
+Route::post('/send-command', [CommandController::class, 'broadcast']);

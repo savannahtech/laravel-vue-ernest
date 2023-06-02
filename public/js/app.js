@@ -1953,20 +1953,117 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _QueueList__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./QueueList */ "./resources/js/components/QueueList.vue");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Home",
+  components: {
+    QueueList: _QueueList__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   data: function data() {
     return {
+      id: 0,
+      defaultCommand: {
+        id: 0,
+        title: '',
+        type: '',
+        value: 0
+      },
+      editedCommand: {
+        name: '',
+        start: 0,
+        stop: 0
+      },
+      commandsCompleted: [],
+      commandsInQueue: [],
       loading: false
     };
   },
-  methods: {}
+  methods: {
+    submit: function submit() {
+      for (var i = 0; i < 30; i++) {
+        var data = Object.assign({}, this.defaultCommand);
+        data.id = i;
+        data.title = 'Title-' + i;
+        data.value = 2 * i;
+        this.addToComplete(data);
+      }
+    },
+    addToQueue: function addToQueue(command) {
+      this.commandsInQueue.push(command);
+    },
+    addToComplete: function addToComplete(command) {
+      this.commandsInQueue.push(command);
+    },
+    executeCommand: function executeCommand(type) {
+      //take edited item and add to queue
+      var data = Object.assign({}, this.defaultCommand);
+      data.id = this.id;
+      data.title = this.editedCommand.name;
+      data.value = 'N/A';
+      data.type = type;
+      this.addToQueue(data);
+      this.id++;
+      this.submitCommand();
+    },
+    submitCommand: function submitCommand(command) {
+      this.$store.dispatch('loadPost', {
+        url: '/send-command'
+      }).then(function (res) {
+        console.log(res.data);
+      });
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    var pusher = new Pusher("98f52a7f78acc96cba8d", {
+      cluster: "eu"
+    });
+    var channel = pusher.subscribe('command');
+    channel.bind('CommandEvent', function (data) {
+      var str = JSON.stringify(data);
+      console.log(str, _typeof(str));
+
+      _this.addToComplete(data);
+    }); // Echo.private('command')
+    //     .listen('CommandEvent', (e) => {
+    //         console.log("COM: ",e)
+    //     });
+  }
 });
 
 /***/ }),
@@ -2152,6 +2249,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "NotFound"
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QueueList.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QueueList.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "QueueList",
+  props: ['items', 'title']
 });
 
 /***/ }),
@@ -14536,7 +14677,145 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-container", [_c("div", [_vm._v("Home")])])
+  return _c(
+    "v-container",
+    [
+      _c(
+        "v-row",
+        [
+          _c(
+            "v-col",
+            { attrs: { cols: "12", md: "4" } },
+            [
+              _c("QueueList", {
+                attrs: {
+                  items: _vm.commandsInQueue,
+                  title: "Commands In Queue"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { attrs: { cols: "12", md: "4" } },
+            [
+              _c(
+                "v-form",
+                {
+                  attrs: { "validate-on": "submit" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return (function() {})($event)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "v-card",
+                    { staticClass: "mx-auto", attrs: { width: "400" } },
+                    [
+                      _c(
+                        "v-card-text",
+                        [
+                          _c("v-text-field", {
+                            attrs: { label: "Name" },
+                            model: {
+                              value: _vm.editedCommand.name,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editedCommand, "name", $$v)
+                              },
+                              expression: "editedCommand.name"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: { type: "number", label: "Start" },
+                            model: {
+                              value: _vm.editedCommand.start,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editedCommand, "start", $$v)
+                              },
+                              expression: "editedCommand.start"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: { type: "number", label: "End" },
+                            model: {
+                              value: _vm.editedCommand.stop,
+                              callback: function($$v) {
+                                _vm.$set(_vm.editedCommand, "stop", $$v)
+                              },
+                              expression: "editedCommand.stop"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-card-actions",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              staticClass: "px-10 py-4",
+                              on: {
+                                click: function($event) {
+                                  return _vm.executeCommand("A")
+                                }
+                              }
+                            },
+                            [_vm._v("Command A")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              staticClass: "px-10",
+                              on: {
+                                click: function($event) {
+                                  return _vm.executeCommand("B")
+                                }
+                              }
+                            },
+                            [_vm._v("Command B")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { attrs: { cols: "12", md: "4" } },
+            [
+              _c("QueueList", {
+                attrs: {
+                  items: _vm.commandsCompleted,
+                  title: "Completed Commands"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -14854,6 +15133,79 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [_vm._v("\n    Page not found\n")])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QueueList.vue?vue&type=template&id=309bb7f4&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QueueList.vue?vue&type=template&id=309bb7f4&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-card",
+    {
+      staticClass: "mx-auto",
+      attrs: {
+        "max-width": "400",
+        "min-height": "300",
+        "max-height": "400",
+        outlined: ""
+      }
+    },
+    [
+      _c("v-card-title", [_vm._v(_vm._s(_vm.title))]),
+      _vm._v(" "),
+      _c("v-virtual-scroll", {
+        attrs: { items: _vm.items, height: "320", "item-height": "48" },
+        scopedSlots: _vm._u([
+          {
+            key: "default",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _c(
+                  "v-list-item",
+                  {
+                    class: item.type === "A" ? "primary " : "green",
+                    attrs: { link: "", ripple: "" }
+                  },
+                  [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(item.id) +
+                        ". " +
+                        _vm._s(item.title) +
+                        " == " +
+                        _vm._s(item.value) +
+                        " -- [" +
+                        _vm._s(item.type) +
+                        "]\n            "
+                    )
+                  ]
+                )
+              ]
+            }
+          }
+        ])
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -76434,14 +76786,55 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "SPlafEWAFsad",
-  cluster: "mt1",
-  encrypted: false,
-  wsHost: process.env.MIX_WEBSOCKET_HOST,
-  wsPort: process.env.MIX_WEBSOCKET_PORT,
-  disableStats: true,
-  enabledTransports: ['ws'],
-  forceTLS: true
+  key: "98f52a7f78acc96cba8d",
+  cluster: "eu",
+  encrypted: false // wsHost: window.location.hostname,
+  // wsPort: process.env.MIX_WEBSOCKET_PORT,
+  // wssPort: process.env.MIX_WEBSOCKET_PORT,
+  // disableStats: false,
+  // forceTLS: false,
+  // enabledTransports: ['ws']
+  // enabledTransports: ['ws','wss','flash']
+
+});
+
+if (process.env.APP_ENV !== 'production') {
+  window.Pusher.logToConsole = true;
+}
+
+window.Echo.connector.pusher.connection.bind('connecting', function (payload) {
+  /**
+   * All dependencies have been loaded and Channels is trying to connect.
+   * The connection will also enter this state when it is trying to reconnect after a connection failure.
+   */
+  console.log('connecting...');
+});
+window.Echo.connector.pusher.connection.bind('connected', function (payload) {
+  /**
+   * The connection to Channels is open and authenticated with your app.
+   */
+  console.log('connected!', payload);
+});
+window.Echo.connector.pusher.connection.bind('unavailable', function (payload) {
+  /**
+   *  The connection is temporarily unavailable. In most cases this means that there is no internet connection.
+   *  It could also mean that Channels is down, or some intermediary is blocking the connection. In this state,
+   *  pusher-js will automatically retry the connection every 15 seconds.
+   */
+  console.log('unavailable', payload);
+});
+window.Echo.connector.pusher.connection.bind('failed', function (payload) {
+  /**
+   * Channels is not supported by the browser.
+   * This implies that WebSockets are not natively available and an HTTP-based transport could not be found.
+   */
+  console.log('failed', payload);
+});
+window.Echo.connector.pusher.connection.bind('disconnected', function (payload) {
+  /**
+   * The Channels connection was previously connected and has now intentionally been closed
+   */
+  console.log('disconnected', payload);
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
@@ -76718,6 +77111,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NotFound_vue_vue_type_template_id_2ce50e5a_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NotFound_vue_vue_type_template_id_2ce50e5a_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/QueueList.vue":
+/*!***********************************************!*\
+  !*** ./resources/js/components/QueueList.vue ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _QueueList_vue_vue_type_template_id_309bb7f4_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./QueueList.vue?vue&type=template&id=309bb7f4&scoped=true& */ "./resources/js/components/QueueList.vue?vue&type=template&id=309bb7f4&scoped=true&");
+/* harmony import */ var _QueueList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./QueueList.vue?vue&type=script&lang=js& */ "./resources/js/components/QueueList.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _QueueList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _QueueList_vue_vue_type_template_id_309bb7f4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _QueueList_vue_vue_type_template_id_309bb7f4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "309bb7f4",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/QueueList.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/QueueList.vue?vue&type=script&lang=js&":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/QueueList.vue?vue&type=script&lang=js& ***!
+  \************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_QueueList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./QueueList.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QueueList.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_QueueList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/QueueList.vue?vue&type=template&id=309bb7f4&scoped=true&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/QueueList.vue?vue&type=template&id=309bb7f4&scoped=true& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QueueList_vue_vue_type_template_id_309bb7f4_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./QueueList.vue?vue&type=template&id=309bb7f4&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QueueList.vue?vue&type=template&id=309bb7f4&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QueueList_vue_vue_type_template_id_309bb7f4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QueueList_vue_vue_type_template_id_309bb7f4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -77297,12 +77759,11 @@ router.beforeEach(function (to, from, next) {
 /*!*****************************************!*\
   !*** ./resources/js/store/VuexStore.js ***!
   \*****************************************/
-/*! exports provided: loadSomething, default */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadSomething", function() { return loadSomething; });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -77328,26 +77789,6 @@ function showErrorNotification() {
   });
 }
 
-function loadSomething(param) {
-  return new Promise(function (resolve, reject) {
-    /* await axios.post('/logout',).then(() => {
-         context.dispatch('loadUser')
-     })*/
-
-    /*alert("am loading something.");
-    let data = {
-        mode: "add-to-near-site",
-        errorMessage:"",
-        errorCode:"",
-         url:"",
-     }*/
-    axios.post(param.url, param).then(function (response) {
-      resolve(response.data);
-    })["catch"](function (error) {
-      reject(error);
-    });
-  });
-}
 var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
   state: {
     theme: {
@@ -77358,14 +77799,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
       total: null,
       from: 1,
       to: 1
-    },
-    searchStaffs: [],
-    loaded: {
-      ranks: false,
-      staffs: false,
-      specs: false,
-      faculties: false,
-      departments: false
     },
     user: {
       is_admin: false,
@@ -77381,13 +77814,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
       login: 100,
       logout: 200,
       register: 300
-    },
-    specializations: [],
-    departments: [],
-    faculties: [],
-    ranks: [],
-    staffs: [],
-    genders: []
+    }
   },
   mutations: {
     updateUser: function updateUser(state, user) {
@@ -77395,165 +77822,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
     },
     updateGenders: function updateGenders(state, genders) {
       state.genders = genders;
-    },
-    saveQueryResults: function saveQueryResults(state, response) {
-      state.searchStaffs = response.data.data;
-      state.paginator.nextPage = response.data.next_page_url;
-      state.paginator.from = response.data.from;
-      state.paginator.to = response.data.to;
-      state.paginator.total = response.data.total;
-      response.data.data.forEach(function (dt) {
-        //Loop through the data and add it to staffs but make sure it does not exits
-        var index = state.staffs.findIndex(function (st) {
-          return parseInt(st.id) === parseInt(dt.id);
-        });
-
-        if (index === -1) {
-          state.staffs.push(dt);
-        }
-      });
-    },
-    addNextData: function addNextData(state, response) {
-      var data = response.data.data;
-      state.paginator.from = response.data.from;
-      state.paginator.to = response.data.to;
-      state.paginator.nextPage = response.data.next_page_url;
-      data.forEach(function (dt) {
-        //Loop through the data and add it to staffs but make sure it does not exits
-        var index = state.staffs.findIndex(function (st) {
-          return parseInt(st.id) === parseInt(dt.id);
-        });
-
-        if (index === -1) {
-          state.staffs.push(dt);
-        }
-
-        state.searchStaffs.push(dt);
-      });
-    },
-    //    For Faculty
-    updateFaculties: function updateFaculties(state, faculties) {
-      state.faculties = faculties;
-    },
-    addToFaculties: function addToFaculties(state, faculty) {
-      state.faculties.push(faculty);
-    },
-    updateAFaculty: function updateAFaculty(state, faculty) {
-      var index = state.faculties.findIndex(function (spec) {
-        return spec.id === faculty.id;
-      });
-      Object.assign(state.faculties[index], faculty);
-    },
-    removeAFaculty: function removeAFaculty(state, id) {
-      var index = state.faculties.findIndex(function (spec) {
-        return spec.id === id;
-      });
-      state.faculties.splice(index, 1);
-    },
-    facultiesLoaded: function facultiesLoaded(state) {
-      state.loaded.faculties = true;
-    },
-    //    End Faculty
-    //    For Department
-    updateDepartments: function updateDepartments(state, departments) {
-      state.departments = departments;
-    },
-    addToDepartments: function addToDepartments(state, department) {
-      state.departments.push(department);
-    },
-    updateADepartment: function updateADepartment(state, department) {
-      console.log(department);
-
-      if (!!department) {
-        var index = state.departments.findIndex(function (spec) {
-          return spec.id === department.id;
-        });
-        Object.assign(state.departments[index], department);
-      }
-    },
-    removeADepartment: function removeADepartment(state, id) {
-      var index = state.departments.findIndex(function (spec) {
-        return spec.id === id;
-      });
-      state.departments.splice(index, 1);
-    },
-    departmentsLoaded: function departmentsLoaded(state) {
-      state.loaded.departments = true;
-    },
-    //    End Department
-    //  For Specialization
-    updateSpecializations: function updateSpecializations(state, specializations) {
-      state.specializations = specializations;
-    },
-    addToSpecializations: function addToSpecializations(state, specialization) {
-      state.specializations.push(specialization);
-    },
-    updateASpecialization: function updateASpecialization(state, specialization) {
-      var index = state.specializations.findIndex(function (spec) {
-        return spec.id === specialization.id;
-      });
-      Object.assign(state.specializations[index], specialization);
-    },
-    removeASpecialization: function removeASpecialization(state, id) {
-      var index = state.specializations.findIndex(function (spec) {
-        return spec.id === id;
-      });
-      state.specializations.splice(index, 1);
-    },
-    specsLoaded: function specsLoaded(state) {
-      state.loaded.specs = true;
-    },
-    //   End Specialization
-    //    For Rank
-    updateRanks: function updateRanks(state, ranks) {
-      state.ranks = ranks;
-    },
-    addToRanks: function addToRanks(state, rank) {
-      state.ranks.push(rank);
-    },
-    updateARank: function updateARank(state, rank) {
-      if (!!rank) {
-        var index = state.ranks.findIndex(function (spec) {
-          return spec.id === rank.id;
-        });
-        Object.assign(state.ranks[index], rank);
-      }
-    },
-    removeARank: function removeARank(state, id) {
-      var index = state.ranks.findIndex(function (spec) {
-        return spec.id === id;
-      });
-      state.ranks.splice(index, 1);
-    },
-    ranksLoaded: function ranksLoaded(state) {
-      state.loaded.ranks = true;
-    },
-    //    End Rank
-    //    For Staff
-    updateStaffs: function updateStaffs(state, staffs) {
-      state.staffs = staffs;
-    },
-    addToStaffs: function addToStaffs(state, staff) {
-      state.staffs.push(staff);
-    },
-    updateAStaff: function updateAStaff(state, rank) {
-      if (!!rank) {
-        var index = state.staffs.findIndex(function (spec) {
-          return spec.id === rank.id;
-        });
-        Object.assign(state.staffs[index], rank);
-      }
-    },
-    removeAStaff: function removeAStaff(state, id) {
-      var index = state.staffs.findIndex(function (spec) {
-        return spec.id === id;
-      });
-      state.staffs.splice(index, 1);
-    },
-    staffsLoaded: function staffsLoaded(state) {
-      state.loaded.staffs = true;
-    } //    End Staff
-
+    }
   },
   actions: {
     loadUser: function loadUser(context) {
@@ -77653,18 +77922,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
         }
       });
     },
-    loadUserSpecs: function loadUserSpecs(context, id) {
-      return new Promise(function (resolve) {
-        var info = {
-          url: '/spec',
-          mode: 'get-user-specs',
-          user_id: id
-        };
-        context.dispatch('loadPost', info).then(function (res) {
-          resolve(res);
-        });
-      });
-    },
     showError: function showError(context) {
       showErrorNotification(context.state.error.message);
     },
@@ -77673,399 +77930,11 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
       context.state.error.message = payload.errorMessage;
       context.state.error.code = payload.errorCode;
       context.state.error.param = payload;
-    },
-    //    Load Faculty from db
-    loadFaculties: function loadFaculties(context) {
-      if (!context.state.loaded.faculties) {
-        var info = {};
-        info.url = "/faculty";
-        info.mode = "load-faculties";
-        return new Promise(function (resolve, reject) {
-          context.dispatch("loadPost", info).then(function (res) {
-            context.commit('updateFaculties', res.data);
-            context.commit("facultiesLoaded");
-            resolve();
-          })["catch"](function (error) {
-            reject(error);
-          });
-        });
-      }
-    },
-    //    Create Faculty
-    handleFaculty: function handleFaculty(context, payload) {
-      var info = payload;
-      info.url = "/faculty";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          if (info.mode === 'create-faculty') {
-            //    Created
-            context.commit('addToFaculties', res.data);
-          } else {
-            //    Updated
-            context.commit('updateAFaculty', res.data);
-          }
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Delete Faculty
-    deleteFaculty: function deleteFaculty(context, payload) {
-      var info = payload;
-      info.url = "/faculty";
-      info.mode = "delete-faculty";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function () {
-          context.commit('removeAFaculty', payload.id);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    loadADepartment: function loadADepartment(context, id) {
-      var info = {};
-      info.url = "/department";
-      info.mode = "load-department";
-      info.id = id;
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          context.commit('addToDepartments', res.data);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Load Department from db
-    loadDepartments: function loadDepartments(context) {
-      if (!context.state.loaded.departments) {
-        var info = {};
-        info.url = "/department";
-        info.mode = "load-departments";
-        return new Promise(function (resolve, reject) {
-          context.dispatch("loadPost", info).then(function (res) {
-            context.commit('updateDepartments', res.data);
-            context.commit("departmentsLoaded");
-            resolve();
-          })["catch"](function (error) {
-            reject(error);
-          });
-        });
-      }
-    },
-    //    Create Department
-    handleDepartment: function handleDepartment(context, payload) {
-      var info = payload;
-      info.url = "/department";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          if (info.mode === 'create-department') {
-            //    Created
-            context.commit('addToDepartments', res.data);
-          } else {
-            //    Updated
-            context.commit('updateADepartment', res.data);
-          }
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Delete Department
-    deleteDepartment: function deleteDepartment(context, payload) {
-      var info = payload;
-      info.url = "/department";
-      info.mode = "delete-department";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function () {
-          context.commit('removeADepartment', payload.id);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    loadASpecialization: function loadASpecialization(context, id) {
-      var info = {};
-      info.url = "/spec";
-      info.mode = "load-Specialization";
-      info.id = id;
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          context.commit('addToSpecializations', res.data);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Load specialization from db
-    loadSpecializations: function loadSpecializations(context) {
-      if (!context.state.loaded.specs) {
-        var info = {};
-        info.url = "/spec";
-        info.mode = "load-specs";
-        return new Promise(function (resolve, reject) {
-          context.dispatch("loadPost", info).then(function (res) {
-            context.commit('updateSpecializations', res.data);
-            context.commit("specsLoaded");
-          })["catch"](function (error) {
-            reject(error);
-          });
-        });
-      }
-    },
-    //    Create specialization
-    handleSpecialization: function handleSpecialization(context, payload) {
-      var info = payload;
-      info.url = "/spec";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          if (info.mode === 'create-spec') {
-            //    Created
-            context.commit('addToSpecializations', res.data);
-          } else {
-            //    Updated
-            context.commit('updateASpecialization', res.data);
-          }
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Delete Specialization
-    deleteSpec: function deleteSpec(context, payload) {
-      var info = payload;
-      info.url = "/spec";
-      info.mode = "delete-spec";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function () {
-          context.commit('removeASpecialization', payload.id).then(function () {
-            resolve();
-          });
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    loadARank: function loadARank(context, id) {
-      var info = {};
-      info.url = "/rank";
-      info.mode = "load-rank";
-      info.id = id;
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          context.commit('addToRanks', res.data);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Load Rank from db
-    loadRanks: function loadRanks(context) {
-      if (!context.state.loaded.ranks) {
-        var info = {};
-        info.url = "/rank";
-        info.mode = "load-ranks";
-        return new Promise(function (resolve, reject) {
-          context.dispatch("loadPost", info).then(function (res) {
-            context.commit('updateRanks', res.data);
-            context.commit("ranksLoaded");
-            resolve();
-          })["catch"](function (error) {
-            reject(error);
-          });
-        });
-      }
-    },
-    //    Create Rank
-    handleRank: function handleRank(context, payload) {
-      var info = payload;
-      info.url = "/rank";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          if (info.mode === 'create-rank') {
-            //    Created
-            context.commit('addToRanks', res.data);
-          } else {
-            //    Updated
-            context.commit('updateARank', res.data);
-          }
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Delete Rank
-    deleteRank: function deleteRank(context, payload) {
-      var info = payload;
-      info.url = "/rank";
-      info.mode = "delete-rank";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function () {
-          context.commit('removeARank', payload.id);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    loadAStaff: function loadAStaff(context, id) {
-      var info = {};
-      info.url = "/staffs";
-      info.mode = "load-staff";
-      info.id = id;
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function (res) {
-          context.commit('addToStaffs', res.data);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Load Staffs from db
-    loadStaffs: function loadStaffs(context) {
-      if (!context.state.loaded.staffs) {
-        console.log("Here");
-        var info = {};
-        info.url = "/staffs";
-        info.mode = "load-staffs";
-        return new Promise(function (resolve, reject) {
-          context.dispatch("loadPost", info).then(function (res) {
-            context.commit('updateStaffs', res.data);
-            context.commit("staffsLoaded");
-            resolve();
-          })["catch"](function (error) {
-            reject(error);
-          });
-        });
-      }
-    },
-
-    /*createStaff(context, form){
-        return new Promise((resolve, reject)=>{
-            let formData = new FormData()
-            Object.entries(form).forEach(field => {
-                formData.append(field[0], field[1])
-            })
-            formData.append('age',3)
-             formData.append('image', form.image);
-            axios.post('/staffs',formData).then(res => {
-                resolve(res)
-            }).catch(error=>{
-                reject(error)
-            })
-        })
-    },*/
-    saveImage: function saveImage(context, form) {
-      return new Promise(function (resolve, reject) {
-        if (form === null) {
-          resolve(null);
-        }
-
-        axios.post('/staffs', form).then(function (res) {
-          resolve(res);
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
-    },
-    //    Create Staff
-    handleStaff: function handleStaff(context, payload) {
-      var info = payload;
-      return new Promise(function (resolve, reject) {
-        info.url = "/staffs"; //Check if the is file
-
-        var formData = null;
-
-        if (payload.image) {
-          formData = new FormData();
-          formData.append('image', payload.image);
-          formData.append('mode', 'get-img');
-        }
-
-        context.dispatch('saveImage', formData).then(function (res) {
-          console.log(!!res, res);
-
-          if (!!res) {
-            info.img_name = res.data;
-          }
-
-          context.dispatch('loadPost', info).then(function (res) {
-            if (info.mode === 'create-staff') {
-              //    Created
-              context.commit('addToStaffs', res.data);
-            } else {
-              //    Updated
-              context.commit('updateAStaff', res.data);
-            }
-          });
-        });
-        /*context.dispatch("createStaff", info).then(res => {
-            if (info.mode === 'create-staff') {
-                //    Created
-                context.commit('addToStaffs', res.data)
-            } else {
-                //    Updated
-                context.commit('updateAStaff', res.data)
-            }
-         }).catch(error => {
-            reject(error)
-        })*/
-      });
-    },
-    //    Delete Staff
-    deleteStaff: function deleteStaff(context, payload) {
-      var info = payload;
-      info.url = "/staffs";
-      info.mode = "delete-staff";
-      return new Promise(function (resolve, reject) {
-        context.dispatch("loadPost", info).then(function () {
-          context.commit('removeAStaff', payload.id);
-          resolve();
-        })["catch"](function (error) {
-          reject(error);
-        });
-      });
     }
   },
   getters: {
     isAuth: function isAuth(state) {
       return !!state.user.id;
-    },
-    getStaffById: function getStaffById(state) {
-      return function (id) {
-        return state.staffs.find(function (s) {
-          return parseInt(s.id) === parseInt(id);
-        });
-      };
-    },
-    getDepartmentById: function getDepartmentById(state) {
-      return function (id) {
-        return state.departments.find(function (d) {
-          return parseInt(d.id) === parseInt(id);
-        });
-      };
-    },
-    getRankById: function getRankById(state) {
-      return function (id) {
-        return state.ranks.find(function (r) {
-          return parseInt(r.id) === parseInt(id);
-        });
-      };
-    },
-    getTotalStaffsLoaded: function getTotalStaffsLoaded(state) {
-      return state.staffs.length;
-    },
-    getSpecializationById: function getSpecializationById(state) {
-      return function (id) {
-        return state.specializations.find(function (s) {
-          return parseInt(s.id) === parseInt(id);
-        });
-      };
     }
   }
 });
