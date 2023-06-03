@@ -18,8 +18,10 @@ It will build the db table and seed some dummy data.
 You can now run 
 - `php artisan serve`
 
-Start Web Socket
-- `php artisan websockets:serve`
+Start queue on another terminal
+- `php artisan queue:work`
+
+Now open the app on port 8000
 
 and log in with 
 - Email: admin@gmail.com
