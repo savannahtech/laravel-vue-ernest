@@ -35,4 +35,15 @@ class Command
         $this->stop = $stop;
     }
 
+    public static function getCommandFromRequest($request): Command
+    {
+        return new Command($request->id, $request->title, $request->type, $request->value, $request->start, $request->stop);
+    }
+
+    public function __toString()
+    {
+        return serialize($this);
+    }
+
+
 }

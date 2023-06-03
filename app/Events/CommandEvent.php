@@ -37,16 +37,16 @@ class CommandEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('command');
+        return new Channel('command');
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return Channel|array
-     */
-    public function broadcastWith()
-    {
-        return ["command"=>$this->command];
-    }
+//    /**
+//     * Get the channels the event should broadcast on.
+//     *
+//     * @return Channel|array
+//     */
+//    public function broadcastWith()
+//    {
+//        return ["command"=>$this->command];
+//    }
 }

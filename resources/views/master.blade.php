@@ -5,7 +5,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset('favicon/apple-touch-icon.png',config('app.secure', false))}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{asset('favicon/favicon-32x32.png',config('app.secure', false))}}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset('favicon/favicon-16x16.png',config('app.secure', false))}}">
-    <link rel="manifest" href="{{asset('favicon/favicon-16x16.png',config('app.secure', false))}}">
+    <link rel="icon" href="{{asset('/favicon-16x16.png',config('app.secure', false))}}">
     <link rel="manifest" href="/site.webmanifest">
 
         <meta name="msapplication-TileColor" content="#ffffff">

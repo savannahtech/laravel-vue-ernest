@@ -46,9 +46,16 @@ Route::get('/ok',function (){
    return ["data" => "command"];
 });
 
+Route::post('/clear',function (){
+    session(['commands'=>[]]);
+
+    return ["commands" => session('commands')];
+});
+
 Route::post('/user',function (){
    return auth()->user();
 });
+
 
 Route::get('login', function (){
     $auth = Auth::check() ? auth()->user():[];

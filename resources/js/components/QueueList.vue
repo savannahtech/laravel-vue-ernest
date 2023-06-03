@@ -19,7 +19,7 @@
                     :class="item.type === 'A' ? 'primary ' : 'green'"
                     ripple
                 >
-                    {{item.id}}. {{item.title}} == {{item.value}} -- [{{item.type}}]
+                    {{item.id}}. {{item.title}} == `{{item.value}}` - [{{item.type}}]
                 </v-list-item>
             </template>
         </v-virtual-scroll>

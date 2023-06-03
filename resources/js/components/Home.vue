@@ -1,5 +1,7 @@
 <template>
     <v-container>
+
+        <v-btn @click="clear()" class="">Clear</v-btn>
         <v-row>
             <v-col cols="12" md="4">
                 <QueueList :items="commandsInQueue" title="Commands In Queue"></QueueList>
@@ -43,12 +45,17 @@
                     id:0,
                     title: '',
                     type:'',
-                    value: 0
+                    value: 0,
+                    start: 1,
+                    stop: 1
                 },
                 editedCommand: {
-                    name:'',
-                    start: 0,
-                    stop: 0
+                    id:0,
+                    title: '',
+                    type:'',
+                    value: 0,
+                    start: 1,
+                    stop: 1
                 },
                 commandsCompleted: [],
                 commandsInQueue: [],
@@ -56,36 +63,40 @@
             }
         },
         methods: {
-            submit() {
-                for (let i = 0; i < 30; i++) {
-                    let data = Object.assign({}, this.defaultCommand)
-                    data.id = i;
-                    data.title = 'Title-' + i;
-                    data.value = 2 * i;
-                    this.addToComplete(data)
-                }
-            },
             addToQueue(command){
                 this.commandsInQueue.push(command)
             },
             addToComplete(command){
-                this.commandsInQueue.push(command)
+                this.commandsCompleted.push(command)
             },
             executeCommand(type){
                 //take edited item and add to queue
-                let data = Object.assign({}, this.defaultCommand)
+                let data = Object.assign({}, this.editedCommand)
                 data.id = this.id;
                 data.title = this.editedCommand.name;
                 data.value = 'N/A';
                 data.type = type;
-                this.addToQueue(data)
                 this.id++;
-                this.submitCommand();
+                this.addToQueue(data)
+                this.submitCommand(data);
             },
             submitCommand(command){
+                command.url = '/send-command'
 
-                this.$store.dispatch('loadPost', {url: '/send-command'}).then(res => {
-                    console.log(res.data)
+                if (command.type == 'B' && !this.$store.getters.isAuth){
+                    this.$swal('Please Log In to use Command B');
+                } else {
+                    this.$store.dispatch('loadPost', command).then(res => {
+                        console.log(res)
+                    })
+                }
+
+            },
+            clear(){
+                this.commandsCompleted = [];
+                this.commandsInQueue = [];
+                this.$store.dispatch('loadPost', {url:'/clear'}).then(res => {
+                    console.log(res)
                 })
             }
         },
@@ -95,16 +106,9 @@
             });
 
             var channel = pusher.subscribe('command');
-            channel.bind('CommandEvent', (data)=> {
-                let str = JSON.stringify(data)
-                console.log(str, typeof str)
-                this.addToComplete(data);
+            channel.bind('App\\Events\\CommandEvent', (data)=> {
+                this.addToComplete(data.command);
             });
-
-            // Echo.private('command')
-            //     .listen('CommandEvent', (e) => {
-            //         console.log("COM: ",e)
-            //     });
         }
     }
 </script>

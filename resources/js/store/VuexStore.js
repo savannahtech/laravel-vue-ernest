@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 function showErrorNotification(message = 'Something went wrong!', title = 'Oops...') {
-    Vue.swal.fire({
+        Vue.swal.fire({
         icon: 'error',
         title: title,
         text: message,

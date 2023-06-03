@@ -1954,8 +1954,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _QueueList__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./QueueList */ "./resources/js/components/QueueList.vue");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
+//
+//
 //
 //
 //
@@ -2000,12 +2000,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         id: 0,
         title: '',
         type: '',
-        value: 0
+        value: 0,
+        start: 1,
+        stop: 1
       },
       editedCommand: {
-        name: '',
-        start: 0,
-        stop: 0
+        id: 0,
+        title: '',
+        type: '',
+        value: 0,
+        start: 1,
+        stop: 1
       },
       commandsCompleted: [],
       commandsInQueue: [],
@@ -2013,37 +2018,41 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     };
   },
   methods: {
-    submit: function submit() {
-      for (var i = 0; i < 30; i++) {
-        var data = Object.assign({}, this.defaultCommand);
-        data.id = i;
-        data.title = 'Title-' + i;
-        data.value = 2 * i;
-        this.addToComplete(data);
-      }
-    },
     addToQueue: function addToQueue(command) {
       this.commandsInQueue.push(command);
     },
     addToComplete: function addToComplete(command) {
-      this.commandsInQueue.push(command);
+      this.commandsCompleted.push(command);
     },
     executeCommand: function executeCommand(type) {
       //take edited item and add to queue
-      var data = Object.assign({}, this.defaultCommand);
+      var data = Object.assign({}, this.editedCommand);
       data.id = this.id;
       data.title = this.editedCommand.name;
       data.value = 'N/A';
       data.type = type;
-      this.addToQueue(data);
       this.id++;
-      this.submitCommand();
+      this.addToQueue(data);
+      this.submitCommand(data);
     },
     submitCommand: function submitCommand(command) {
+      command.url = '/send-command';
+
+      if (command.type == 'B' && !this.$store.getters.isAuth) {
+        this.$swal('Please Log In to use Command B');
+      } else {
+        this.$store.dispatch('loadPost', command).then(function (res) {
+          console.log(res);
+        });
+      }
+    },
+    clear: function clear() {
+      this.commandsCompleted = [];
+      this.commandsInQueue = [];
       this.$store.dispatch('loadPost', {
-        url: '/send-command'
+        url: '/clear'
       }).then(function (res) {
-        console.log(res.data);
+        console.log(res);
       });
     }
   },
@@ -2054,15 +2063,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       cluster: "eu"
     });
     var channel = pusher.subscribe('command');
-    channel.bind('CommandEvent', function (data) {
-      var str = JSON.stringify(data);
-      console.log(str, _typeof(str));
-
-      _this.addToComplete(data);
-    }); // Echo.private('command')
-    //     .listen('CommandEvent', (e) => {
-    //         console.log("COM: ",e)
-    //     });
+    channel.bind('App\\Events\\CommandEvent', function (data) {
+      _this.addToComplete(data.command);
+    });
   }
 });
 
@@ -14681,6 +14684,18 @@ var render = function() {
     "v-container",
     [
       _c(
+        "v-btn",
+        {
+          on: {
+            click: function($event) {
+              return _vm.clear()
+            }
+          }
+        },
+        [_vm._v("Clear")]
+      ),
+      _vm._v(" "),
+      _c(
         "v-row",
         [
           _c(
@@ -15190,9 +15205,9 @@ var render = function() {
                         _vm._s(item.id) +
                         ". " +
                         _vm._s(item.title) +
-                        " == " +
+                        " == `" +
                         _vm._s(item.value) +
-                        " -- [" +
+                        "` - [" +
                         _vm._s(item.type) +
                         "]\n            "
                     )
